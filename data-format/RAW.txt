@@ -1,0 +1,34 @@
+BEACON: <=============== [                         Nishita]  e46f13b51724   6   0   0    -95
+BEACON: <=============== [                        KHORANAS]  ec2280d0c7ad   7   0   0    -87
+PROBE:  daa119bd9031 ==> [                                ]  ffffffffffff   0   0   0    -80
+BEACON: <=============== [                         rs-home]  8013829bea1c   8   0   0    -89
+BEACON: <=============== [                   praveen hudda]  048d38181065   8   0   0    -95
+DEVICE: ec086b937cfc ==> [                              ??]  04000066e1f0   0   0   0    -94
+BEACON: <=============== [                            Home]  a0ab1baf8972  11   0   0    -93
+BEACON: <=============== [                          c1-202]  e46f13b43d6b  11   0   0    -91
+BEACON: <=============== [                           Seths]  e46f138554a6  11   0   0    -87
+BEACON: <=============== [                            Asha]  a0ab1bb0978c  11   0   0    -86
+BEACON: <=============== [                        TAKSHILA]  ec086b937cfc  10   0   0    -94
+BEACON: <=============== [                           Kiaan]  8026896515e8  11   0   0    -95
+DEVICE: a0ab1baf8972 ==> [                              ??]  040080548972   0   0   0    -96
+BEACON: <=============== [                         S-GUPTA]  ec22808af9a5  13   0   0    -93
+DEVICE: 54b80a4fc5dc ==> [                              ??]  0510c0090000   0   0   0    -76
+DEVICE: 8013829bea1c ==> [                         rs-home]  8013829bea1c   0   0   0    -91
+DEVICE: 0c1daf764b7b ==> [                          c1-202]  e46f13b43d6b   0   0   0    -95
+DEVICE: e46f13b43d6b ==> [                              ??]  0400107e978c   0   0   0    -92
+BEACON: <=============== [                         Piggies]  10bef577c37f   1   0   0    -96
+BEACON: <=============== [                          TF 198]  98ded096592c   1   0   0    -97
+UKNOWN:00 0b 00 6cb0cee2ddfa 10bef577c37f 10bef577c37f Bad ssid len 168!!
+DEVICE: 94652d071cf7 ==> [                          GF 198]  54b80a4fc5dc   0   0   0    -85
+DEVICE: 020fb5db9f25 ==> [                         rs-home]  8013829bea1c   0   0   0    -92
+BEACON: <=============== [                              DD]  98ded02df5bc   9   0   0    -94
+DEVICE: 98ded0218ae1 ==> [                     MathurTribe]  98ded0218ae1   0   0   0    -80
+PROBE:  10bef577c5b7 ==> [                         GGN-POD]  ffffffffffff   0   0   0    -87
+BEACON: <=============== [                         Mr.Seth]  c8d71929003d  13   0   0    -95
+PROBE:  3497f64e0777 ==> [                                ]  ffffffffffff   0   0   0    -96
+BEACON: <=============== [                         Saurabh]  54b80a9d8ad9   1   0   0    -95
+PROBE:  68c44d4a1237 ==> [                                ]  ffffffffffff   0   0   0    -92
+PROBE:  b8782e71f2d4 ==> [          Sanjay's Wi-Fi Network]  ffffffffffff   0   0   0    -89
+BEACON: <=============== [                                ]  fa8fca51042d  11   0   0    -95
+BEACON: <=============== [                       NETGEAR42]  405d82db1748  11   0   0    -96
+BEACON: <=============== [                         EVA SUD]  e46f13859449  11   0   0    -96
