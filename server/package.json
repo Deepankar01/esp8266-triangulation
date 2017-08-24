@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server to serve as sink for esp8266 devices",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "restify",
+    "esp8266"
+  ],
+  "author": "Deepankar Agrawal",
+  "license": "MIT",
+  "dependencies": {
+    "restify": "^5.2.0"
+  }
+}
