@@ -14,6 +14,7 @@
   "author": "Deepankar Agrawal",
   "license": "MIT",
   "dependencies": {
+    "influx": "^5.0.7",
     "restify": "^5.2.0"
   }
 }
