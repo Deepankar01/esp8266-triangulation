@@ -1,0 +1,6 @@
+FROM node:alpine
+ARG NODE_ENVIRONMENT=PRODUCTION
+VOLUME ["/usr/src/app"]
+WORKDIR /usr/src/app
+ENV NODE_ENV=$NODE_ENVIRONMENT
+CMD ["npm","start"]

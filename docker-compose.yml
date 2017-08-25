@@ -14,4 +14,17 @@ services:
         ports:
             - "3000:3000"
         volumes: 
-            - ./grafana:/var/lib/grafana    
+            - ./grafana:/var/lib/grafana
+        logging:
+            driver: none        
+    influx-dump-server:
+         depends_on:
+           - influx-db
+         build:
+            context: ./server/
+            dockerfile: Dockerfile
+         container_name: influx-dump-server
+         ports:
+            - "8080:8080"   
+         volumes:
+            - ./server:/usr/src/app
