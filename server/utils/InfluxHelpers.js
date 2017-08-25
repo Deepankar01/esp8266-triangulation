@@ -1,4 +1,4 @@
-const {InfluxConstants} = require("./constants");
+const { InfluxConstants } = require("./constants");
 const Influx = require('influx')
 
 const influx = new Influx.InfluxDB({
@@ -9,14 +9,14 @@ const influx = new Influx.InfluxDB({
         fields: {
             RSSI: Influx.FieldType.INTEGER,
             SSID: Influx.FieldType.STRING,
-            channel: Influx.FieldType.STRING,
-            station: Influx.FieldType.STRING,
-            SSID:Influx.FieldType.STRING
+            station: Influx.FieldType.STRING
         },
         tags: [
             'routerId',
             'type',
             'BSSID',
+            'SSID',
+            'channel'
         ]
     }]
 })
@@ -41,12 +41,12 @@ const WriteData = (id, data) => new Promise((resolve, reject) => {
             routerId: id,
             BSSID: data.BSSID,
             type: data.type,
+            channel: data.channel,
+            SSID: data.SSID === "" ? "NONE" : data.SSID
         },
         fields: {
             RSSI: data.RSSI,
-            station: data.STATION || "",
-            channel: data.channel,
-            SSID: data.SSID,
+            station: data.STATION || ""
         },
     }]).then(() => {
         return resolve("Data Saved");
