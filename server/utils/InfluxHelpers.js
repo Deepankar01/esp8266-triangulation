@@ -9,13 +9,14 @@ const influx = new Influx.InfluxDB({
         fields: {
             RSSI: Influx.FieldType.INTEGER,
             SSID: Influx.FieldType.STRING,
+            channel: Influx.FieldType.STRING,
             station: Influx.FieldType.STRING,
+            SSID:Influx.FieldType.STRING
         },
         tags: [
             'routerId',
             'type',
-            'channel',
-            'BSSID'
+            'BSSID',
         ]
     }]
 })
@@ -39,13 +40,13 @@ const WriteData = (id, data) => new Promise((resolve, reject) => {
         tags: {
             routerId: id,
             BSSID: data.BSSID,
-            channel: data.channel,
             type: data.type,
         },
         fields: {
             RSSI: data.RSSI,
+            station: data.STATION || "",
+            channel: data.channel,
             SSID: data.SSID,
-            station: data.STATION || ""
         },
     }]).then(() => {
         return resolve("Data Saved");

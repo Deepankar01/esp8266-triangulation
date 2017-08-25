@@ -16,7 +16,16 @@ services:
         volumes: 
             - ./grafana:/var/lib/grafana
         logging:
-            driver: none        
+            driver: none
+    chronograf:
+        container_name: chronograf-container
+        image: quay.io/influxdb/chronograf:1.3.7.0
+        ports:
+            - "3001:8888"
+        volumes: 
+            - ./chronograf:/var/lib/chronograf
+        logging:
+            driver: none                
     influx-dump-server:
          depends_on:
            - influx-db
