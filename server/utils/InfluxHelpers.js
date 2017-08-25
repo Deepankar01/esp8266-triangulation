@@ -1,13 +1,11 @@
-const HOST = "localhost";
-const DATABASE = "esp8266-data";
-const MEASURMENT = "network_environment"
+const {InfluxConstants} = require("./constants");
 const Influx = require('influx')
 
 const influx = new Influx.InfluxDB({
-    host: HOST,
-    database: DATABASE,
+    host: InfluxConstants.HOST,
+    database: InfluxConstants.DATABASE,
     schema: [{
-        measurement: MEASURMENT,
+        measurement: InfluxConstants.MEASURMENT,
         fields: {
             RSSI: Influx.FieldType.INTEGER,
             channel: Influx.FieldType.INTEGER,
@@ -24,8 +22,8 @@ const influx = new Influx.InfluxDB({
 
 const CheckDatabase = () => new Promise((resolve, reject) => {
     influx.getDatabaseNames().then(names => {
-        if (!names.includes(DATABASE)) {
-            return resolve(influx.createDatabase(DATABASE));
+        if (!names.includes(InfluxConstants.DATABASE)) {
+            return resolve(influx.createDatabase(InfluxConstants.DATABASE));
         }
         else {
             return resolve({});
@@ -36,7 +34,7 @@ const CheckDatabase = () => new Promise((resolve, reject) => {
 
 const WriteData = (id, data) => new Promise((resolve, reject) => {
     influx.writePoints([{
-        measurement: MEASURMENT,
+        measurement: InfluxConstants.MEASURMENT,
         tags: {
             routerId: id
         },

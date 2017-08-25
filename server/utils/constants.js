@@ -1,4 +1,9 @@
 module.exports = {
     OKResponse: "OK",
-    ERRORResponse: "ERROR"
+    ERRORResponse: "ERROR",
+    InfluxConstants :{
+        HOST:"localhost",
+        DATABASE:"esp8266-data",
+        MEASURMENT:"network_environment",
+    }
 }
