@@ -8,14 +8,14 @@ const influx = new Influx.InfluxDB({
         measurement: InfluxConstants.MEASURMENT,
         fields: {
             RSSI: Influx.FieldType.INTEGER,
-            channel: Influx.FieldType.INTEGER,
-            type: Influx.FieldType.STRING,
             SSID: Influx.FieldType.STRING,
-            BSSID: Influx.FieldType.STRING,
             station: Influx.FieldType.STRING,
         },
         tags: [
-            'routerId'
+            'routerId',
+            'type',
+            'channel',
+            'BSSID'
         ]
     }]
 })
@@ -37,14 +37,14 @@ const WriteData = (id, data) => new Promise((resolve, reject) => {
     influx.writePoints([{
         measurement: InfluxConstants.MEASURMENT,
         tags: {
-            routerId: id
+            routerId: id,
+            BSSID: data.BSSID,
+            channel: data.channel,
+            type: data.type,
         },
         fields: {
             RSSI: data.RSSI,
-            channel: data.channel,
-            type: data.type,
             SSID: data.SSID,
-            BSSID: data.BSSID,
             station: data.STATION || ""
         },
     }]).then(() => {
