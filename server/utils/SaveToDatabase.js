@@ -5,7 +5,7 @@ const { CheckDatabase, WriteData } = require("./InfluxHelpers");
 const ValidateData = (data) => new Promise((resolve, reject) => (
     data.hasOwnProperty("RSSI") && data.hasOwnProperty("channel") 
     && data.hasOwnProperty("type") && data.hasOwnProperty("SSID") 
-    && data.hasOwnProperty("MACAddress")) ? resolve({}) : reject(Error)
+    && data.hasOwnProperty("BSSID")) ? resolve({}) : reject("invalid property")
 )
 
 

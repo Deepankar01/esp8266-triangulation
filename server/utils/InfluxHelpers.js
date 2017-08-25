@@ -11,7 +11,8 @@ const influx = new Influx.InfluxDB({
             channel: Influx.FieldType.INTEGER,
             type: Influx.FieldType.STRING,
             SSID: Influx.FieldType.STRING,
-            MACAddress: Influx.FieldType.STRING
+            BSSID: Influx.FieldType.STRING,
+            station: Influx.FieldType.STRING,
         },
         tags: [
             'routerId'
@@ -43,7 +44,8 @@ const WriteData = (id, data) => new Promise((resolve, reject) => {
             channel: data.channel,
             type: data.type,
             SSID: data.SSID,
-            MACAddress: data.MACAddress
+            BSSID: data.BSSID,
+            station: data.STATION || ""
         },
     }]).then(() => {
         return resolve("Data Saved");
