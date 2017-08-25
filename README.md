@@ -12,5 +12,5 @@ An newbie approach for esp8266 triangulation
 # Happy Monitoring network environment around you :nerd_face: 
 
 
-A Chronogrpah Screenshot 
+A Chronograf Screenshot 
 ![Alt text](Screenshot.png "Optional Title")
