@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "influx": "^5.0.7",
+    "mongoose": "^4.11.8",
     "restify": "^5.2.0"
   }
 }

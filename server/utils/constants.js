@@ -5,5 +5,10 @@ module.exports = {
         HOST:"influx-database",
         DATABASE:"esp8266-data",
         MEASURMENT:"network_environment",
+    },
+    MongoConstants:{
+        HOST: "mongodb-container",
+        DATABASE: "esp8266-network-scan",
+        COLLECTION: "scan",
     }
 }
