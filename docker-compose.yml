@@ -25,7 +25,14 @@ services:
         volumes: 
             - ./chronograf:/var/lib/chronograf
         logging:
-            driver: none                
+            driver: none
+    mongodb:
+        container_name: mongodb-container
+        image: mongo:latest
+        ports:
+            - "27017:27017"
+        volumes: 
+            - ./mongoDB:/data/db                      
     influx-dump-server:
          depends_on:
            - influx-db
