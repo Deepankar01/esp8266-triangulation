@@ -6,6 +6,7 @@ An newbie approach for esp8266 triangulation
 
 ### `Run docker-compose up` to start the servers
       > PORT 8086 Influx
+      > PORT 27017 MongoDB
       > http://localhost:3001 Chronograf
 
 
