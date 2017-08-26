@@ -14,7 +14,7 @@
 #include "functions.h"
 
 
-#define MAX_APS_TRACKED 50
+#define MAX_APS_TRACKED 100
 #define MAX_CLIENTS_TRACKED 100
 #undef PRINT_RAW_HEADER   // define this to print raw packet headers
 #define PERIODIC  //define this to get summary of new and expired entries periodically
@@ -26,17 +26,18 @@ clientinfo clients_known[MAX_CLIENTS_TRACKED];            // Array to save MACs 
 int clients_known_count = 0;                              // Number of known CLIENTs
 probeinfo probes_known[MAX_CLIENTS_TRACKED];            // Array to save MACs of known CLIENTs
 int probes_known_count = 0;
+int known = 0;
 #define disable 0
 #define enable  1
-#define MAX_CLIENT_AGE 1000  //age before entry is considered old (seconds)
-#define CHECK_INTERVAL 60   // periodic check interval (seconds)
+#define MAX_CLIENT_AGE 60  //age before entry is considered old (seconds)
+#define CHECK_INTERVAL 30   // periodic check interval (seconds)
 
 unsigned int channel = 1;
 uint32_t last_check_time, next_check_time;
-const char* ssid     = "GF 198";
+const char* ssid     = "198 SF";
 const char* password = "world198";
-const char* host = "192.168.20.5";
-const int httpPort = 8000;
+const char* host = "192.168.2.111";
+const int httpPort = 8080;
 WiFiClient client;
 
 String response = "";
@@ -106,6 +107,7 @@ void loop() {
       for (int u = 0; u < clients_known_count; u++) {
 
         if ( !clients_known[u].reported && clients_known[u].last_heard >= last_check_time ) {
+          known = 0;
           if (!client.connect(host, httpPort)) {
             Serial.println("connection failed");
           }
@@ -113,11 +115,30 @@ void loop() {
             Serial.println("connection success");
           }
           Serial.print("New ");
+          response = "'type':'DEVICE','RSSI':" + String(clients_known[u].rssi) + ",'channel':" + String(clients_known[u].channel) + ",'SSID':'";
+
+          for (int k = 0; k < aps_known_count; k++)
+          {
+            if (! memcmp(aps_known[k].bssid, clients_known[u].bssid, ETH_MAC_LEN)) {
+              response = response + (char*)aps_known[k].ssid;
+              known = 1;     // AP known => Set known flag
+              break;
+            };
+          };
+
+          if (! known)  {
+            response = response + "??";
+          };
+          response = response + "','station':'";
+          for (int i = 0; i < 6; i++) response = response + String(clients_known[u].station[i], HEX);
+          response = response + "','BSSID':'";
+          for (int i = 0; i < 6; i++) response = response + String(clients_known[u].bssid[i], HEX);
+          response = response + "'";
           Serial.print("Sending Data");
-          response = "DEVICE=rssi:" + String(clients_known[u].rssi) + ",channel:" + String(clients_known[u].channel) +;
+
           Serial.print("Requesting POST: ");
           // Send request to the server:
-          client.println("POST / HTTP/1.1");
+          client.println("POST /1 HTTP/1.1");
           client.println("Host: server_name");
           client.println("Accept: */*");
           client.println("Content-Type: application/x-www-form-urlencoded");
@@ -138,26 +159,139 @@ void loop() {
 
         } else if ( clients_known[u].reported && now > MAX_CLIENT_AGE &&
                     clients_known[u].last_heard <= (last_check_time - MAX_CLIENT_AGE) ) {
+
+          known = 0;
+          if (!client.connect(host, httpPort)) {
+            Serial.println("connection failed");
+          }
+          else {
+            Serial.println("connection success");
+          }
           Serial.print("Old ");
+          response = "'type':'DEVICE','RSSI':" + String(clients_known[u].rssi) + ",'channel':" + String(clients_known[u].channel) + ",'SSID':'";
+
+          for (int k = 0; k < aps_known_count; k++)
+          {
+            if (! memcmp(aps_known[k].bssid, clients_known[u].bssid, ETH_MAC_LEN)) {
+              response = response + (char*)aps_known[k].ssid;
+              known = 1;     // AP known => Set known flag
+              break;
+            };
+          };
+
+          if (! known)  {
+            response = response + "??";
+          };
+          response = response + "','station':'";
+          for (int i = 0; i < 6; i++) response = response + String(clients_known[u].station[i], HEX);
+          response = response + "','BSSID':'";
+          for (int i = 0; i < 6; i++) response = response + String(clients_known[u].bssid[i], HEX);
+          response = response + "'";
+          Serial.print("Sending Data");
+
+          Serial.print("Requesting POST: ");
+          // Send request to the server:
+          client.println("POST /1 HTTP/1.1");
+          client.println("Host: server_name");
+          client.println("Accept: */*");
+          client.println("Content-Type: application/x-www-form-urlencoded");
+          client.print("Content-Length: ");
+          client.println(response.length());
+          client.println();
+          client.print(response);
+
+          delay(100); // Can be changed
+          if (client.connected()) {
+            client.stop();  // DISCONNECT FROM THE SERVER
+          }
+          Serial.println("Data sent");
           print_client(clients_known[u]);
           clients_known[u].reported = 0;
         };
       };
 
-      
+
       for (int u = 0; u < aps_known_count; u++) {
         if ( !aps_known[u].reported && aps_known[u].err == 0
              && aps_known[u].last_heard >= last_check_time ) {
-
+          if (!client.connect(host, httpPort)) {
+            Serial.println("connection failed");
+          }
+          else {
+            Serial.println("connection success");
+          }
           Serial.print("New ");
+
+
+          if (aps_known[u].err != 0) {
+            Serial.printf("BEACON ERR: (%d)  \r\n", aps_known[u].err);
+          } else {
+            response = "'type':'BEACON','RSSI':" + String(aps_known[u].rssi) + ",'channel':" + String(aps_known[u].channel) + ",'SSID':'";
+            response = response + (char*)aps_known[u].ssid;
+            response = response + "','BSSID':'";
+            for (int i = 0; i < 6; i++) response = response + String(aps_known[u].bssid[i], HEX);
+            response = response + "'";
+            Serial.print("Sending Data");
+            Serial.print("Requesting POST: ");
+            // Send request to the server:
+            client.println("POST /1 HTTP/1.1");
+            client.println("Host: server_name");
+            client.println("Accept: */*");
+            client.println("Content-Type: application/x-www-form-urlencoded");
+            client.print("Content-Length: ");
+            client.println(response.length());
+            client.println();
+            client.print(response);
+
+            delay(100); // Can be changed
+            if (client.connected()) {
+              client.stop();  // DISCONNECT FROM THE SERVER
+            }
+            Serial.println("Data sent");
+
+          }
+
           print_beacon(aps_known[u]);
           aps_known[u].reported = 1;
-
-
 
         } else if ( aps_known[u].reported && aps_known[u].err == 0 && now > MAX_CLIENT_AGE &&
                     aps_known[u].last_heard <= (last_check_time - MAX_CLIENT_AGE) ) {
           Serial.print("Old ");
+          if (!client.connect(host, httpPort)) {
+            Serial.println("connection failed");
+          }
+          else {
+            Serial.println("connection success");
+          }
+
+          if (aps_known[u].err != 0) {
+            Serial.printf("BEACON ERR: (%d)  \r\n", aps_known[u].err);
+          } else {
+            response = "'type':'BEACON','RSSI':" + String(aps_known[u].rssi) + ",'channel':" + String(aps_known[u].channel) + ",'SSID':'";
+            response = response + (char*)aps_known[u].ssid;
+            response = response + "','BSSID':'";
+            for (int i = 0; i < 6; i++) response = response + String(aps_known[u].bssid[i], HEX);
+            response = response + "'";
+            Serial.print("Sending Data");
+            Serial.print("Requesting POST: ");
+            // Send request to the server:
+            client.println("POST /1 HTTP/1.1");
+            client.println("Host: server_name");
+            client.println("Accept: */*");
+            client.println("Content-Type: application/x-www-form-urlencoded");
+            client.print("Content-Length: ");
+            client.println(response.length());
+            client.println();
+            client.print(response);
+
+            delay(100); // Can be changed
+            if (client.connected()) {
+              client.stop();  // DISCONNECT FROM THE SERVER
+            }
+            Serial.println("Data sent");
+
+          }
+
           print_beacon(aps_known[u]);
           aps_known[u].reported = 0;
         };
@@ -167,13 +301,92 @@ void loop() {
       for (int u = 0; u < probes_known_count; u++) {
 
         if ( !probes_known[u].reported && probes_known[u].last_heard >= last_check_time ) {
-          Serial.print("New ");
+
+          if (!client.connect(host, httpPort)) {
+            Serial.println("connection failed");
+          }
+          else {
+            Serial.println("connection success");
+          }
+
+
+          if (probes_known[u].err != 0) {
+            Serial.printf("ci.err %02d", probes_known[u].err);
+            Serial.printf("\r\n");
+          } else {
+            response = "'type':'PROBE','RSSI':" + String(probes_known[u].rssi) + ",'channel':" + String(probes_known[u].channel) + ",";
+            response = response + "'station':'";
+            for (int i = 0; i < 6; i++) response = response + String(probes_known[u].station[i], HEX);
+            response = response + "','SSID':'" + (char*)probes_known[u].ssid + "','BSSID':'";
+            for (int i = 0; i < 6; i++) response = response + String(probes_known[u].bssid[i], HEX);
+            response = response + "'";
+
+            Serial.print("Sending Data");
+
+            Serial.print("Requesting POST: ");
+            // Send request to the server:
+            client.println("POST /1 HTTP/1.1");
+            client.println("Host: server_name");
+            client.println("Accept: */*");
+            client.println("Content-Type: application/x-www-form-urlencoded");
+            client.print("Content-Length: ");
+            client.println(response.length());
+            client.println();
+            client.print(response);
+
+            delay(100); // Can be changed
+            if (client.connected()) {
+              client.stop();  // DISCONNECT FROM THE SERVER
+            }
+            Serial.println("Data sent");
+          }
+
+
+
           print_probe(probes_known[u]);
           probes_known[u].reported = 1;
 
         } else if ( probes_known[u].reported && now > MAX_CLIENT_AGE &&
                     probes_known[u].last_heard <= (last_check_time - MAX_CLIENT_AGE) ) {
           Serial.print("Old ");
+          if (!client.connect(host, httpPort)) {
+            Serial.println("connection failed");
+          }
+          else {
+            Serial.println("connection success");
+          }
+
+
+          if (probes_known[u].err != 0) {
+            Serial.printf("ci.err %02d", probes_known[u].err);
+            Serial.printf("\r\n");
+          } else {
+            response = "'type':'PROBE','RSSI':" + String(probes_known[u].rssi) + ",'channel':" + String(probes_known[u].channel) + ",";
+            response = response + "'station':'";
+            for (int i = 0; i < 6; i++) response = response + String(probes_known[u].station[i], HEX);
+            response = response + "','SSID':'" + (char*)probes_known[u].ssid + "','BSSID':'";
+            for (int i = 0; i < 6; i++) response = response + String(probes_known[u].bssid[i], HEX);
+            response = response + "'";
+
+            Serial.print("Sending Data");
+
+            Serial.print("Requesting POST: ");
+            // Send request to the server:
+            client.println("POST /1 HTTP/1.1");
+            client.println("Host: server_name");
+            client.println("Accept: */*");
+            client.println("Content-Type: application/x-www-form-urlencoded");
+            client.print("Content-Length: ");
+            client.println(response.length());
+            client.println();
+            client.print(response);
+
+            delay(100); // Can be changed
+            if (client.connected()) {
+              client.stop();  // DISCONNECT FROM THE SERVER
+            }
+            Serial.println("Data sent");
+          }
           print_probe(probes_known[u]);
           probes_known[u].reported = 0;
         };
@@ -181,6 +394,7 @@ void loop() {
 
       last_check_time = now;
       next_check_time = now + CHECK_INTERVAL;
+      wifi_promiscuous_enable(enable);
       //ESP.restart();
     };
 

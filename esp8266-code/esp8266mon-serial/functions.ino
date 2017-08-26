@@ -286,39 +286,6 @@ void print_client(clientinfo ci)
   }
 }
 
-void print_client(clientinfo ci)
-{
-  int u = 0;
-  int known = 0;   // Clear known flag
-  uint64_t now = millis()/1000;
-  if (ci.err != 0) {
-    Serial.printf("ci.err %02d", ci.err);
-    Serial.printf("\r\n");
-  } else {
-    Serial.printf("DEVICE: ");
-    for (int i = 0; i < 6; i++) Serial.printf("%02x", ci.station[i]);
-    Serial.printf(" ==> ");
-
-    for (u = 0; u < aps_known_count; u++)
-    {
-      if (! memcmp(aps_known[u].bssid, ci.bssid, ETH_MAC_LEN)) {
-        Serial.printf("[%32s]  ", aps_known[u].ssid);
-        known = 1;     // AP known => Set known flag
-        break;
-      }
-    }
-
-    if (! known)  {
-      Serial.printf("[%32s]  ", "??");    
-    };
-    for (int i = 0; i < 6; i++) Serial.printf("%02x", ci.bssid[i]);
-    Serial.printf(" %3d", ci.channel);
-    Serial.printf("   %d", (now - ci.last_heard));
-    Serial.printf("   %d", (ci.reported));      
-    Serial.printf("   %4d\r\n", ci.rssi);
-  }
-}
-
 void print_probe(probeinfo ci)
 {
   int u = 0;
